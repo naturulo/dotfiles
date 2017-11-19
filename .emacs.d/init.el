@@ -36,7 +36,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (cider clj-refactor clojure-mode company smartparens ac-slime slime use-package magit flycheck wgrep undohist undo-tree org-link-minor-mode helm auto-complete))))
+    (flycheck-rust racer cider clj-refactor clojure-mode company smartparens ac-slime slime use-package magit flycheck wgrep undohist undo-tree org-link-minor-mode helm auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -112,3 +112,16 @@
              ("C-n" . company-select-next)
              ("C-p" . company-select-previous)))
 
+;;;; rust
+;;; add path of racer, rustfmt and rustc
+(add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
+;;; autorun settings
+(eval-after-load "rust-mode"
+  '(setq-default rust-format-on-save t))
+;;; use eldoc support of racer
+(add-hook 'racer-mode-hook #'eldoc-mode)
+;;; use completion support of racer
+(add-hook 'racer-mode-hook (lambda ()
+                             (company-mode)
+                             (set (make-variable-buffer-local 'company-idle-delay) 0.1)
+                             (set (make-variable-buffer-local 'company-minimum-prefix-length) 0)))
