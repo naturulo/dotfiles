@@ -54,7 +54,8 @@
 (eval-after-load "vc" '(remote-hook 'find-file-hooks 'vc-find-file-hook))
 (bind-key "C-x m" 'magit-status)
 (bind-key "C-c l" 'magit-blame)
-
+;;; exec-path-from-shell config-list
+(exec-path-from-shell-initialize)
 ;;;; Common Lisp dev-env settings
 ;;; slime
 (require 'slime)
