@@ -32,7 +32,6 @@
 (setq auto-save-list-file-prefix nil)
 ;;; display time in mode-line
 (display-time)
-
 ;;;; Package
 ;;; package settigns
 (require 'package nil t)
@@ -63,7 +62,13 @@ There are two things you can do about this warning:
   :ensure t)
 (use-package diminish
   :ensure t)
-
+(use-package company
+  :ensure t)
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 2)
+(setq company-selection-wrap-around t)
+(define-key company-active-map (kbd "C-n") 'company-select-next)
+(define-key company-active-map (kbd "C-p") 'company-select-previous) 
 ;;; delete empty files
 (defun my:delete-file-if-no-contents ()
   (when (and (buffer-file-name (current-buffer))
