@@ -108,3 +108,6 @@ There are two things you can do about this warning:
 ;;; install magit
 (use-package magit
   :ensure t)
+;;; install elm-mode
+(use-package elm-mode
+  :ensure t)
