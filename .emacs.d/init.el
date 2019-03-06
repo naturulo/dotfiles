@@ -120,7 +120,16 @@ There are two things you can do about this warning:
   :ensure t)
 (add-to-list 'company-backends 'company-elm)
 (add-hook 'elm-mode-hook 'company-mode)
+;;;; install slime
+(use-package slime
+  :ensure t)
+(use-package slime-company
+  :ensure t)
+(setq inferior-lisp-program "clisp")
+(add-to-list 'slime-contribs '(slime-fancy slime-company))
 
+
+;;;; customs
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
