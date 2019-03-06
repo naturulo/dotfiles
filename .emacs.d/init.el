@@ -61,6 +61,10 @@ There are two things you can do about this warning:
   (package-install 'use-package))
 (eval-when-compile
   (require 'use-package))
+(use-package bind-key
+  :ensure t)
+(use-package diminish
+  :ensure t)
 
 ;;; delete empty files
 (defun my:delete-file-if-no-contents ()
@@ -174,3 +178,6 @@ There are two things you can do about this warning:
  ;; If there is more than one, they won't work right.
  '(doom-modeline-bar ((t (:background "#6272a4"))))
  '(show-paren-match ((nil (:background "#44475a" :foreground "#f1fa8c")))))
+;;; install org
+(use-package org
+  :ensure t)
