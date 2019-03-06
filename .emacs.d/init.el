@@ -102,3 +102,110 @@ There are two things you can do about this warning:
 ;;; install org
 (use-package org
   :ensure t)
+;;; install alchemist for elixir
+(use-package alchemist
+  :ensure t)
+;;; install magit
+(use-package magit
+  :ensure t)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (magit alchemist which-key use-package shrink-path rainbow-delimiters neotree highlight-indent-guides hide-mode-line eldoc-eval diminish all-the-icons))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+<<<<<<< HEAD
+ )
+=======
+ '(magit-diff-added ((t (:background "black" :foreground "green"))))
+ '(magit-diff-added-highlight ((t (:background "white" :foreground "green"))))
+ '(magit-diff-removed ((t (:background "black" :foreground "blue"))))
+ '(magit-diff-removed-highlight ((t (:background "white" :foreground "blue"))))
+ '(magit-hash ((t (:foreground "red")))))
+(add-hook 'after-init-hook #'global-flycheck-mode)
+;;; magit
+(setq-default magit-auto-revert-mode nil)
+(setq vc-handled-backends '())
+(eval-after-load "vc" '(remote-hook 'find-file-hooks 'vc-find-file-hook))
+(bind-key "C-x m" 'magit-status)
+(bind-key "C-c l" 'magit-blame)
+;;; exec-path-from-shell config-list
+(exec-path-from-shell-initialize)
+;;;; Common Lisp dev-env settings
+;;; slime
+(require 'slime)
+(setq inferior-lisp-program "sbcl")
+(slime-setup '(slime-repl slime-fancy slime-banner))
+(add-hook 'slime-mode-hook #'smartparens-mode)
+;;; ac-slime
+(require 'ac-slime)
+(add-hook 'slime-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'slime-repl-mode))
+
+;;;; Clojure dev-env settings
+;;; clojure-mode
+(use-package clojure-mode
+  :init
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)
+  (add-hook 'clojure-mode-hook #'subword-mode)
+  (add-hook 'clojure-mode-hook #'smartparens-mode))
+;;; cider
+(use-package cider
+  :init
+  (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  (add-hook 'cider-mode-hook #'company-mode)
+  (add-hook 'cider-mode-hook #'eldoc-mode)
+  (add-hook 'cider-repl-mode-hook #'company-mode)
+  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+  :diminish subword-mode
+  :config
+  (setq nrepl-log-messages t
+        cider-repl-display-in-current-window t
+        cider-repl-use-clojure-font-lock t
+        cider-prompt-save-file-on-load 'always-save
+        cider-font-lock-dynamically '(macro core function var)
+        cider-overlays-use-font-lock t)
+  (cider-repl-toggle-pretty-printing))
+;;; clj-refactor
+(use-package clj-refactor
+  :diminish clj-refactor-mode
+  :config (cljr-add-keybindings-with-prefix "C-c j"))
+;;; company-mode
+(use-package company
+  :config
+  (global-company-mode)
+  (setq company-idle-delay 0.1
+        company-minimum-prefix-length 2
+        company-selection-wrap-around t)
+  (bind-keys :map company-mode-map
+             ("C-i" . company-complet))
+  (bind-keys :map company-active-map
+             ("C-n" . company-select-next)
+             ("C-p" . company-select-previous)
+             ("C-s" . company-search-words-regexp))
+  (bind-keys :map company-search-map
+             ("C-n" . company-select-next)
+             ("C-p" . company-select-previous)))
+
+;;;; rust
+;;; add path of racer, rustfmt and rustc
+(add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
+;;; autorun settings
+(eval-after-load "rust-mode"
+  '(setq-default rust-format-on-save t))
+;;; use eldoc support of racer
+(add-hook 'racer-mode-hook #'eldoc-mode)
+;;; use completion support of racer
+(add-hook 'racer-mode-hook (lambda ()
+                             (company-mode)
+                             (set (make-variable-buffer-local 'company-idle-delay) 0.1)
+                             (set (make-variable-buffer-local 'company-minimum-prefix-length) 0)))
+>>>>>>> d0d54d2... added exec-path-from-shell
