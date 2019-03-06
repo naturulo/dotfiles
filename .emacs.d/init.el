@@ -1,128 +1,181 @@
 ;;;; Initial Settings
-;;; package
-(require 'package)
-(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(package-initialize)
+;;;; https://uwabami.github.io/cc-env/Emacs.html
 ;;; editing setting
 (prefer-coding-system 'utf-8)
 (setq-default tab-width 2 indent-tabs-mode nil)
-;;; helm
-(require 'helm-config)
-;;; auto-complete
-(when (require 'auto-complete-config nil t)
-  (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
-  (ac-config-default)
-  (setq ac-use-menu-map t)
-  (setq ac-ignore-case nil))
-;;; wgrep
-(require 'wgrep nil t)
-;;; undohist
-(when (require 'undohist nil t)
-  (undohist-initialize))
-;;; undotree
-(when (require 'undo-tree nil t)
-  (define-key global-map (kbd "C-'") 'undo-tree-redo)
-  (global-undo-tree-mode))
-;;; cua-mode
-(cua-mode t)
-(setq cua-enable-cua-keys nil)
-(define-key global-map (kbd "C-x SPC") 'cua-set-rectangle-mark)
-;;; flycheck
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (flycheck-rust racer cider clj-refactor clojure-mode company smartparens ac-slime slime use-package magit flycheck wgrep undohist undo-tree org-link-minor-mode helm auto-complete))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(magit-diff-added ((t (:background "black" :foreground "green"))))
- '(magit-diff-added-highlight ((t (:background "white" :foreground "green"))))
- '(magit-diff-removed ((t (:background "black" :foreground "blue"))))
- '(magit-diff-removed-highlight ((t (:background "white" :foreground "blue"))))
- '(magit-hash ((t (:foreground "red")))))
-(add-hook 'after-init-hook #'global-flycheck-mode)
-;;; magit
-(setq-default magit-auto-revert-mode nil)
-(setq vc-handled-backends '())
-(eval-after-load "vc" '(remote-hook 'find-file-hooks 'vc-find-file-hook))
-(bind-key "C-x m" 'magit-status)
-(bind-key "C-c l" 'magit-blame)
-;;; exec-path-from-shell config-list
-(exec-path-from-shell-initialize)
-;;;; Common Lisp dev-env settings
-;;; slime
-(require 'slime)
-(setq inferior-lisp-program "sbcl")
-(slime-setup '(slime-repl slime-fancy slime-banner))
-(add-hook 'slime-mode-hook #'smartparens-mode)
-;;; ac-slime
-(require 'ac-slime)
-(add-hook 'slime-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'slime-repl-mode))
+;;; don't show some mode
+(setq inhibit-startup-screen t
+      inhibit-startup-message t)
+;(tool-bar-mode -1)
+;(scroll-bar-mode -1)
+(menu-bar-mode -1)
+(column-number-mode -1)
+;;; show line number
+(global-linum-mode t)
+(setq linum-format "%5d")
+;;; don't ring bells
+(setq ring-bell-function 'ignore)
+;;; highlight current row
+(global-hl-line-mode t)
+;;; highlight parans
+(show-paren-mode t)
+(setq show-paren-style 'mixed)
+;;; enable y-or-n instead of yes-or-no
+(fset 'yes-or-no-p 'y-or-n-p)
+;;; truncating lines
+(set-default 'truncate-lines t)
+(set-default 'truncate-partial-width-windows t)
+;;; always follow symlinks
+(setq vc-follow-symlinks t)
+;;; don't create systemfiles
+(setq make-backup-files nil)
+(setq create-lockfiles nil)
+(setq auto-save-list-file-prefix nil)
+;;; display time in mode-line
+(display-time)
 
-;;;; Clojure dev-env settings
-;;; clojure-mode
-(use-package clojure-mode
-  :init
-  (add-hook 'clojure-mode-hook #'yas-minor-mode)
-  (add-hook 'clojure-mode-hook #'subword-mode)
-  (add-hook 'clojure-mode-hook #'smartparens-mode))
-;;; cider
-(use-package cider
-  :init
-  (add-hook 'cider-mode-hook #'clj-refactor-mode)
-  (add-hook 'cider-mode-hook #'company-mode)
-  (add-hook 'cider-mode-hook #'eldoc-mode)
-  (add-hook 'cider-repl-mode-hook #'company-mode)
-  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-  :diminish subword-mode
-  :config
-  (setq nrepl-log-messages t
-        cider-repl-display-in-current-window t
-        cider-repl-use-clojure-font-lock t
-        cider-prompt-save-file-on-load 'always-save
-        cider-font-lock-dynamically '(macro core function var)
-        cider-overlays-use-font-lock t)
-  (cider-repl-toggle-pretty-printing))
-;;; clj-refactor
-(use-package clj-refactor
-  :diminish clj-refactor-mode
-  :config (cljr-add-keybindings-with-prefix "C-c j"))
-;;; company-mode
-(use-package company
-  :config
-  (global-company-mode)
-  (setq company-idle-delay 0.1
-        company-minimum-prefix-length 2
-        company-selection-wrap-around t)
-  (bind-keys :map company-mode-map
-             ("C-i" . company-complet))
-  (bind-keys :map company-active-map
-             ("C-n" . company-select-next)
-             ("C-p" . company-select-previous)
-             ("C-s" . company-search-words-regexp))
-  (bind-keys :map company-search-map
-             ("C-n" . company-select-next)
-             ("C-p" . company-select-previous)))
+;;;; Package
+;;; package settigns
+(require 'package nil t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+(when (not (package-installed-p 'use-package))
+  (package-refresh-contents)
+  (package-install 'use-package))
+(require 'use-package)
+(use-package bind-key
+  :ensure t)
+(use-package diminish
+  :ensure t)
+;;; install quelpa and quelpa-use-package
+(use-package quelpa-use-package
+	     :ensure t
+	     :init
+	     (setq quelpa-upgrade-p nil
+		   quelpa-checkout-melpa-p nil
+		   quelpa-update-melpa-p nil
+		   quelpa-melpa-recipe-stores nil))
+;;; measure uptime
+(use-package esup :ensure t)
+;;; delete empty files
+(defun my:delete-file-if-no-contents ()
+  (when (and (buffer-file-name (current-buffer))
+             (= (point-min) (point-max)))
+    (delete-file
+     (buffer-file-name (current-buffer)))))
+(if (not (memq 'my:delete-file-if-no-contents after-save-hook))
+    (setq after-save-hook
+          (cons 'my:delete-file-if-no-contents after-save-hook)))
+;;; don't erase scratch. if erased, regenerate
+(defun my:make-scratch (&optional arg)
+  (interactive)
+  (progn
+    ;; "*scratch*" を作成して buffer-list に放り込む
+    (set-buffer (get-buffer-create "*scratch*"))
+    (funcall initial-major-mode)
+    (erase-buffer)
+    (when (and initial-scratch-message (not inhibit-startup-message))
+      (insert initial-scratch-message))
+    (or arg
+        (progn
+          (setq arg 0)
+          (switch-to-buffer "*scratch*")))
+    (cond ((= arg 0) (message "*scratch* is cleared up."))
+          ((= arg 1) (message "another *scratch* is created")))))
 
-;;;; rust
-;;; add path of racer, rustfmt and rustc
-(add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
-;;; autorun settings
-(eval-after-load "rust-mode"
-  '(setq-default rust-format-on-save t))
-;;; use eldoc support of racer
-(add-hook 'racer-mode-hook #'eldoc-mode)
-;;; use completion support of racer
-(add-hook 'racer-mode-hook (lambda ()
-                             (company-mode)
-                             (set (make-variable-buffer-local 'company-idle-delay) 0.1)
-                             (set (make-variable-buffer-local 'company-minimum-prefix-length) 0)))
+(defun my:buffer-name-list ()
+  (mapcar (function buffer-name) (buffer-list)))
+(add-hook 'kill-buffer-query-functions
+          ;; *scratch* バッファで kill-buffer したら内容を消去するだけにする
+          (function (lambda ()
+                      (if (string= "*scratch*" (buffer-name))
+                          (progn (my:make-scratch 0) nil)
+                        t))))
+(add-hook 'after-save-hook
+          ;; *scratch* バッファの内容を保存したら
+          ;; *scratch* バッファを新しく作る.
+          (function
+           (lambda ()
+             (unless (member "*scratch*" (my:buffer-name-list))
+               (my:make-scratch 1)))))
+;;; install doom theme
+(use-package doom-themes
+    :custom
+    (doom-themes-enable-italic t)
+    (doom-themes-enable-bold t)
+    :custom-face
+    (doom-modeline-bar ((t (:background "#6272a4"))))
+    :config
+    (load-theme 'doom-dracula t)
+    (doom-themes-neotree-config)
+    (doom-themes-org-config))
+(use-package doom-modeline
+      :custom
+      (doom-modeline-buffer-file-name-style 'truncate-with-project)
+      (doom-modeline-icon t)
+      (doom-modeline-major-mode-icon nil)
+      (doom-modeline-minor-modes nil)
+      :hook
+      (after-init . doom-modeline-mode)
+      :config
+      (line-number-mode 0)
+      (column-number-mode 0)
+      (doom-modeline-def-modeline 'main
+    '(bar workspace-number window-number evil-state god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
+    '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
+(use-package hide-mode-line
+    :hook
+    ((neotree-mode imenu-list-minor-mode minimap-mode) . hide-mode-line-mode))
+(use-package which-key
+    :diminish which-key-mode
+    :hook (after-init . which-key-mode))
+(use-package neotree
+    :after
+    projectile
+    :commands
+    (neotree-show neotree-hide neotree-dir neotree-find)
+    :custom
+    (neo-theme 'nerd2)
+    :bind
+    ("<f9>" . neotree-projectile-toggle)
+    :preface
+    (defun neotree-projectile-toggle ()
+      (interactive)
+      (let ((project-dir
+         (ignore-errors
+         ;;; Pick one: projectile or find-file-in-project
+           (projectile-project-root)
+           ))
+        (file-name (buffer-file-name))
+        (neo-smart-open t))
+    (if (and (fboundp 'neo-global--window-exists-p)
+         (neo-global--window-exists-p))
+        (neotree-hide)
+      (progn
+        (neotree-show)
+        (if project-dir
+        (neotree-dir project-dir))
+        (if file-name
+	    (neotree-find file-name)))))))
+(use-package highlight-indent-guides
+    :diminish
+    :hook
+    ((prog-mode yaml-mode) . highlight-indent-guides-mode)
+    :custom
+    (highlight-indent-guides-auto-enabled t)
+    (highlight-indent-guides-responsive t)
+    (highlight-indent-guides-method 'character)) ; column
+(use-package rainbow-delimiters
+    :hook
+    (prog-mode . rainbow-delimiters-mode))
+(use-package paren
+   :ensure nil
+   :hook
+   (after-init . show-paren-mode)
+   :custom-face
+   (show-paren-match ((nil (:background "#44475a" :foreground "#f1fa8c"))))
+   :custom
+   (show-paren-style 'mixed)
+   (show-paren-when-point-inside-paren t)
+   (show-paren-when-point-in-periphery t))
