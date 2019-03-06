@@ -126,8 +126,8 @@ There are two things you can do about this warning:
 (use-package slime-company
   :ensure t)
 (setq inferior-lisp-program "clisp")
-(add-to-list 'slime-contribs '(slime-fancy slime-company))
-
+(add-to-list 'slime-contribs 'slime-fancy)
+(add-to-list 'slime-contribs 'slime-company)
 
 ;;;; customs
 (custom-set-variables
