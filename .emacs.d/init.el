@@ -1,6 +1,8 @@
 ;;;; Initial Settings
 ;;;; https://uwabami.github.io/cc-env/Emacs.html
 ;;;; https://qiita.com/Ladicle/items/feb5f9dce9adf89652cf
+;;; add-load-path
+(add-to-list 'load-path "~/.emacs.d/elisp/")
 ;;; editing setting
 (prefer-coding-system 'utf-8)
 (setq-default tab-width 2 indent-tabs-mode nil)
@@ -118,6 +120,7 @@ There are two things you can do about this warning:
   :ensure t)
 (add-to-list 'company-backends 'company-elm)
 (add-hook 'elm-mode-hook 'company-mode)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
