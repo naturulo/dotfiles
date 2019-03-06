@@ -1,5 +1,6 @@
 ;;;; Initial Settings
 ;;;; https://uwabami.github.io/cc-env/Emacs.html
+;;;; https://qiita.com/Ladicle/items/feb5f9dce9adf89652cf
 ;;; editing setting
 (prefer-coding-system 'utf-8)
 (setq-default tab-width 2 indent-tabs-mode nil)
@@ -43,6 +44,7 @@
 (when (not (package-installed-p 'use-package))
   (package-refresh-contents)
   (package-install 'use-package))
+
 (require 'use-package)
 (use-package bind-key
   :ensure t)
@@ -179,3 +181,16 @@
    (show-paren-style 'mixed)
    (show-paren-when-point-inside-paren t)
    (show-paren-when-point-in-periphery t))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (doom-themes quelpa-use-package esup diminish))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(doom-modeline-bar ((t (:background "#6272a4"))))
+ '(show-paren-match ((nil (:background "#44475a" :foreground "#f1fa8c")))))
