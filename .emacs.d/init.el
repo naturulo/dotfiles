@@ -7,8 +7,6 @@
 ;;; don't show some mode
 (setq inhibit-startup-screen t
       inhibit-startup-message t)
-;(tool-bar-mode -1)
-;(scroll-bar-mode -1)
 (menu-bar-mode -1)
 (column-number-mode -1)
 ;;; show line number
@@ -38,28 +36,15 @@
 ;;;; Package
 ;;; package settigns
 (require 'package nil t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 (when (not (package-installed-p 'use-package))
   (package-refresh-contents)
   (package-install 'use-package))
+(eval-when-compile
+  (require 'use-package))
 
-(require 'use-package)
-(use-package bind-key
-  :ensure t)
-(use-package diminish
-  :ensure t)
-;;; install quelpa and quelpa-use-package
-(use-package quelpa-use-package
-	     :ensure t
-	     :init
-	     (setq quelpa-upgrade-p nil
-		   quelpa-checkout-melpa-p nil
-		   quelpa-update-melpa-p nil
-		   quelpa-melpa-recipe-stores nil))
-;;; measure uptime
-(use-package esup :ensure t)
 ;;; delete empty files
 (defun my:delete-file-if-no-contents ()
   (when (and (buffer-file-name (current-buffer))
@@ -69,38 +54,7 @@
 (if (not (memq 'my:delete-file-if-no-contents after-save-hook))
     (setq after-save-hook
           (cons 'my:delete-file-if-no-contents after-save-hook)))
-;;; don't erase scratch. if erased, regenerate
-(defun my:make-scratch (&optional arg)
-  (interactive)
-  (progn
-    ;; "*scratch*" を作成して buffer-list に放り込む
-    (set-buffer (get-buffer-create "*scratch*"))
-    (funcall initial-major-mode)
-    (erase-buffer)
-    (when (and initial-scratch-message (not inhibit-startup-message))
-      (insert initial-scratch-message))
-    (or arg
-        (progn
-          (setq arg 0)
-          (switch-to-buffer "*scratch*")))
-    (cond ((= arg 0) (message "*scratch* is cleared up."))
-          ((= arg 1) (message "another *scratch* is created")))))
 
-(defun my:buffer-name-list ()
-  (mapcar (function buffer-name) (buffer-list)))
-(add-hook 'kill-buffer-query-functions
-          ;; *scratch* バッファで kill-buffer したら内容を消去するだけにする
-          (function (lambda ()
-                      (if (string= "*scratch*" (buffer-name))
-                          (progn (my:make-scratch 0) nil)
-                        t))))
-(add-hook 'after-save-hook
-          ;; *scratch* バッファの内容を保存したら
-          ;; *scratch* バッファを新しく作る.
-          (function
-           (lambda ()
-             (unless (member "*scratch*" (my:buffer-name-list))
-               (my:make-scratch 1)))))
 ;;; install doom theme
 (use-package doom-themes
     :custom
@@ -112,6 +66,7 @@
     (load-theme 'doom-dracula t)
     (doom-themes-neotree-config)
     (doom-themes-org-config))
+;;; install doom modeline
 (use-package doom-modeline
       :custom
       (doom-modeline-buffer-file-name-style 'truncate-with-project)
@@ -126,12 +81,15 @@
       (doom-modeline-def-modeline 'main
     '(bar workspace-number window-number evil-state god-state ryo-modal xah-fly-keys matches buffer-info remote-host buffer-position parrot selection-info)
     '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
+;;; install hide-mode-line
 (use-package hide-mode-line
     :hook
     ((neotree-mode imenu-list-minor-mode minimap-mode) . hide-mode-line-mode))
+;;; install which-key
 (use-package which-key
     :diminish which-key-mode
     :hook (after-init . which-key-mode))
+;;; install neotree to view easily directory
 (use-package neotree
     :after
     projectile
@@ -160,6 +118,7 @@
         (neotree-dir project-dir))
         (if file-name
 	    (neotree-find file-name)))))))
+;;; install highlight-indent-guides to view indentation
 (use-package highlight-indent-guides
     :diminish
     :hook
@@ -168,9 +127,11 @@
     (highlight-indent-guides-auto-enabled t)
     (highlight-indent-guides-responsive t)
     (highlight-indent-guides-method 'character)) ; column
+;;; View easily rainbow delimiters
 (use-package rainbow-delimiters
     :hook
     (prog-mode . rainbow-delimiters-mode))
+;;; Easy to use parenthesis
 (use-package paren
    :ensure nil
    :hook
@@ -181,16 +142,4 @@
    (show-paren-style 'mixed)
    (show-paren-when-point-inside-paren t)
    (show-paren-when-point-in-periphery t))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (doom-themes quelpa-use-package esup diminish))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(doom-modeline-bar ((t (:background "#6272a4"))))
- '(show-paren-match ((nil (:background "#44475a" :foreground "#f1fa8c")))))
+
