@@ -63,7 +63,6 @@ There are two things you can do about this warning:
   :ensure t)
 (use-package diminish
   :ensure t)
-
 ;;; delete empty files
 (defun my:delete-file-if-no-contents ()
   (when (and (buffer-file-name (current-buffer))
@@ -111,3 +110,18 @@ There are two things you can do about this warning:
 ;;; install elm-mode
 (use-package elm-mode
   :ensure t)
+(add-to-list 'company-backends 'company-elm)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (elm-mode which-key use-package shrink-path rainbow-delimiters neotree magit highlight-indent-guides hide-mode-line eldoc-eval diminish all-the-icons alchemist))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
