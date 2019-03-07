@@ -1,6 +1,8 @@
 ;;;; Initial Settings
 ;;;; https://uwabami.github.io/cc-env/Emacs.html
 ;;;; https://qiita.com/Ladicle/items/feb5f9dce9adf89652cf
+;;; add-load-path
+(add-to-list 'load-path "~/.emacs.d/elisp/")
 ;;; editing setting
 (prefer-coding-system 'utf-8)
 (setq-default tab-width 2 indent-tabs-mode nil)
@@ -32,7 +34,6 @@
 (setq auto-save-list-file-prefix nil)
 ;;; display time in mode-line
 (display-time)
-
 ;;;; Package
 ;;; package settigns
 (require 'package nil t)
@@ -63,6 +64,13 @@ There are two things you can do about this warning:
   :ensure t)
 (use-package diminish
   :ensure t)
+(use-package company
+  :ensure t)
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 2)
+(setq company-selection-wrap-around t)
+(define-key company-active-map (kbd "C-n") 'company-select-next)
+(define-key company-active-map (kbd "C-p") 'company-select-previous) 
 ;;; delete empty files
 (defun my:delete-file-if-no-contents ()
   (when (and (buffer-file-name (current-buffer))
@@ -111,6 +119,17 @@ There are two things you can do about this warning:
 (use-package elm-mode
   :ensure t)
 (add-to-list 'company-backends 'company-elm)
+(add-hook 'elm-mode-hook 'company-mode)
+;;;; install slime
+(use-package slime
+  :ensure t)
+(use-package slime-company
+  :ensure t)
+(setq inferior-lisp-program "clisp")
+(add-to-list 'slime-contribs 'slime-fancy)
+(add-to-list 'slime-contribs 'slime-company)
+
+;;;; customs
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -118,7 +137,7 @@ There are two things you can do about this warning:
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (elm-mode which-key use-package shrink-path rainbow-delimiters neotree magit highlight-indent-guides hide-mode-line eldoc-eval diminish all-the-icons alchemist))))
+    (elm-mode magit alchemist rainbow-delimiters highlight-indent-guides which-key hide-mode-line diminish use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
