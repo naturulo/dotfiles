@@ -120,6 +120,7 @@ There are two things you can do about this warning:
   :ensure t)
 (add-to-list 'company-backends 'company-elm)
 (add-hook 'elm-mode-hook 'company-mode)
+(setq elm-format-on-save t)
 ;;;; install slime
 (use-package slime
   :ensure t)
