@@ -126,7 +126,7 @@ There are two things you can do about this warning:
   :ensure t)
 (use-package slime-company
   :ensure t)
-(setq inferior-lisp-program "clisp")
+(setq inferior-lisp-program "sbcl")
 (add-to-list 'slime-contribs 'slime-fancy)
 (add-to-list 'slime-contribs 'slime-company)
 
