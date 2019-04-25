@@ -66,11 +66,26 @@ There are two things you can do about this warning:
   :ensure t)
 (use-package company
   :ensure t)
+(global-company-mode)
+(setq company-transformers '(company-sort-by-backend-importance))
 (setq company-idle-delay 0)
 (setq company-minimum-prefix-length 2)
 (setq company-selection-wrap-around t)
+(setq completion-ignore-case t)
+(setq company-dabbrev-downcase nil)
+(global-set-key (kbd "C-M-i") 'company-complete)
 (define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous) 
+(define-key company-active-map (kbd "C-p") 'company-select-previous)
+(define-key company-search-map (kbd "C-n") 'company-select-next)
+(define-key company-search-map (kbd "C-p") 'company-select-previous)
+(define-key company-active-map (kbd "C-s") 'company-filter-candidates)
+(define-key company-active-map [tab] 'company-complete-selection)
+(define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
+;;; yasnippet
+(use-package yasnippet
+  :ensure t)
+(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+(yas-global-mode 1)
 ;;; delete empty files
 (defun my:delete-file-if-no-contents ()
   (when (and (buffer-file-name (current-buffer))
@@ -127,8 +142,7 @@ There are two things you can do about this warning:
 (use-package slime-company
   :ensure t)
 (setq inferior-lisp-program "sbcl")
-(add-to-list 'slime-contribs 'slime-fancy)
-(add-to-list 'slime-contribs 'slime-company)
+(slime-setup '(slime-repl slime-fancy slime-banner slime-company))
 
 ;;;; customs
 (custom-set-variables
