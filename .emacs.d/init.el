@@ -81,11 +81,6 @@ There are two things you can do about this warning:
 (define-key company-active-map (kbd "C-s") 'company-filter-candidates)
 (define-key company-active-map [tab] 'company-complete-selection)
 (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
-;;; yasnippet
-(use-package yasnippet
-  :ensure t)
-(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
-(yas-global-mode 1)
 ;;; delete empty files
 (defun my:delete-file-if-no-contents ()
   (when (and (buffer-file-name (current-buffer))
