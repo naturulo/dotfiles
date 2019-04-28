@@ -1,40 +1,55 @@
 ;;;; Initial Settings
 ;;;; https://uwabami.github.io/cc-env/Emacs.html
 ;;;; https://qiita.com/Ladicle/items/feb5f9dce9adf89652cf
+
 ;;; add-load-path
 (add-to-list 'load-path "~/.emacs.d/elisp/")
+
 ;;; editing setting
 (prefer-coding-system 'utf-8)
 (setq-default tab-width 2 indent-tabs-mode nil)
+
 ;;; don't show some mode
 (setq inhibit-startup-screen t
       inhibit-startup-message t)
 (menu-bar-mode -1)
 (column-number-mode -1)
+
 ;;; show line number
 (global-linum-mode t)
 (setq linum-format "%5d")
+
 ;;; don't ring bells
 (setq ring-bell-function 'ignore)
+
 ;;; highlight parans
 (show-paren-mode t)
 (setq show-paren-style 'mixed)
+
 ;;; auto completion parens
 (electric-pair-mode t)
+
 ;;; enable y-or-n instead of yes-or-no
 (fset 'yes-or-no-p 'y-or-n-p)
+
 ;;; truncating lines
 (set-default 'truncate-lines t)
 (set-default 'truncate-partial-width-windows t)
+
 ;;; always follow symlinks
 (setq vc-follow-symlinks t)
+
 ;;; don't create systemfiles
 (setq make-backup-files nil)
 (setq create-lockfiles nil)
 (setq auto-save-list-file-prefix nil)
+
 ;;; display time in mode-line
 (display-time)
+
+
 ;;;; Package
+
 ;;; package settigns
 (require 'package nil t)
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
@@ -81,6 +96,7 @@ There are two things you can do about this warning:
 (define-key company-active-map (kbd "C-s") 'company-filter-candidates)
 (define-key company-active-map [tab] 'company-complete-selection)
 (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
+
 ;;; delete empty files
 (defun my:delete-file-if-no-contents ()
   (when (and (buffer-file-name (current-buffer))
@@ -96,11 +112,13 @@ There are two things you can do about this warning:
   :ensure t
   :hook
   ((neotree-mode imenu-list-minor-mode minimap-mode) . hide-mode-line-mode))
+
 ;;; install which-key
 (use-package which-key
   :ensure t
   :diminish which-key-mode
   :hook (after-init . which-key-mode))
+
 ;;; install highlight-indent-guides to view indentation
 (use-package highlight-indent-guides
   :ensure t
@@ -111,33 +129,31 @@ There are two things you can do about this warning:
   (highlight-indent-guides-auto-enabled t)
   (highlight-indent-guides-responsive t)
   (highlight-indent-guides-method 'character)) ; column
+
 ;;; View easily rainbow delimiters
 (use-package rainbow-delimiters
   :ensure t
   :hook
   (prog-mode . rainbow-delimiters-mode))
+
 ;;; install org
 (use-package org
   :ensure t)
+
 ;;; install alchemist for elixir
 (use-package alchemist
   :ensure t)
+
 ;;; install magit
 (use-package magit
   :ensure t)
+
 ;;; install elm-mode
 (use-package elm-mode
   :ensure t)
 (add-to-list 'company-backends 'company-elm)
 (add-hook 'elm-mode-hook 'company-mode)
 (setq elm-format-on-save t)
-;;;; install slime
-(use-package slime
-  :ensure t)
-(use-package slime-company
-  :ensure t)
-(setq inferior-lisp-program "sbcl")
-(slime-setup '(slime-repl slime-fancy slime-banner slime-company))
 
 ;;;; customs
 (custom-set-variables
